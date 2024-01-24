@@ -3,8 +3,9 @@ import { ChatbotUIContext } from "@/context/context"
 import { LLM_LIST } from "@/lib/models/llm/llm-list"
 import { cn } from "@/lib/utils"
 import { Tables } from "@/supabase/types"
-import { LLMID, MessageImage } from "@/types"
+import { LLM, LLMID, MessageImage } from "@/types"
 import {
+  IconBolt,
   IconCaretDownFilled,
   IconCaretRightFilled,
   IconCircleFilled,
@@ -22,6 +23,7 @@ import { Avatar, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
 import { FilePreview } from "../ui/file-preview"
 import { TextareaAutosize } from "../ui/textarea-autosize"
+import { WithTooltip } from "../ui/with-tooltip"
 import { MessageActions } from "./message-actions"
 import { MessageMarkdown } from "./message-markdown"
 
@@ -52,6 +54,7 @@ export const Message: FC<MessageProps> = ({
     setIsGenerating,
     firstTokenReceived,
     availableLocalModels,
+    availableOpenRouterModels,
     chatMessages,
     selectedAssistant,
     chatImages,
@@ -114,9 +117,11 @@ export const Message: FC<MessageProps> = ({
     }
   }, [isEditing])
 
-  const MODEL_DATA = [...LLM_LIST, ...availableLocalModels].find(
-    llm => llm.modelId === message.model
-  )
+  const MODEL_DATA = [
+    ...LLM_LIST,
+    ...availableLocalModels,
+    ...availableOpenRouterModels
+  ].find(llm => llm.modelId === message.model) as LLM
 
   const selectedAssistantImage = assistantImages.find(
     image => image.path === selectedAssistant?.image_path
@@ -173,14 +178,19 @@ export const Message: FC<MessageProps> = ({
                     />
                   )
                 ) : (
-                  <ModelIcon
-                    modelId={message.model as LLMID}
-                    height={ICON_SIZE}
-                    width={ICON_SIZE}
+                  <WithTooltip
+                    display={<div>{MODEL_DATA.modelName}</div>}
+                    trigger={
+                      <ModelIcon
+                        modelId={message.model as LLMID}
+                        height={ICON_SIZE}
+                        width={ICON_SIZE}
+                      />
+                    }
                   />
                 )
               ) : profile?.image_url ? (
-                <Avatar className={`h-[28px] w-[28px] rounded`}>
+                <Avatar className={`size-[28px] rounded`}>
                   <AvatarImage src={profile?.image_url} />
                 </Avatar>
               ) : (
@@ -219,7 +229,13 @@ export const Message: FC<MessageProps> = ({
                       </div>
                     )
                   default:
-                    return null
+                    return (
+                      <div className="flex animate-pulse items-center space-x-2">
+                        <IconBolt size={20} />
+
+                        <div>Using {toolInUse}...</div>
+                      </div>
+                    )
                 }
               })()}
             </>
@@ -303,9 +319,7 @@ export const Message: FC<MessageProps> = ({
 
         <div className="mt-3 flex flex-wrap gap-2">
           {message.image_paths.map((path, index) => {
-            const item = chatImages.find(
-              image => image.messageId === message.id
-            )
+            const item = chatImages.find(image => image.path === path)
 
             return (
               <Image

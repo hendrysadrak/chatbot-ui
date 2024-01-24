@@ -2,7 +2,7 @@ import { ModelIcon } from "@/components/models/model-icon"
 import { ChatSettingsForm } from "@/components/ui/chat-settings-form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { PRESET_DESCRIPTION_MAX, PRESET_NAME_MAX } from "@/db/limits"
+import { PRESET_NAME_MAX } from "@/db/limits"
 import { Tables } from "@/supabase/types"
 import { FC, useState } from "react"
 import { SidebarItem } from "../all/sidebar-display-item"
@@ -13,6 +13,7 @@ interface PresetItemProps {
 
 export const PresetItem: FC<PresetItemProps> = ({ preset }) => {
   const [name, setName] = useState(preset.name)
+  const [isTyping, setIsTyping] = useState(false)
   const [description, setDescription] = useState(preset.description)
   const [presetChatSettings, setPresetChatSettings] = useState({
     model: preset.model,
@@ -26,6 +27,7 @@ export const PresetItem: FC<PresetItemProps> = ({ preset }) => {
   return (
     <SidebarItem
       item={preset}
+      isTyping={isTyping}
       contentType="presets"
       icon={
         <ModelIcon modelId={presetChatSettings.model} height={30} width={30} />
@@ -51,17 +53,6 @@ export const PresetItem: FC<PresetItemProps> = ({ preset }) => {
               value={name}
               onChange={e => setName(e.target.value)}
               maxLength={PRESET_NAME_MAX}
-            />
-          </div>
-
-          <div className="space-y-1">
-            <Label>Description (optional)</Label>
-
-            <Input
-              placeholder="Preset description..."
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              maxLength={PRESET_DESCRIPTION_MAX}
             />
           </div>
 

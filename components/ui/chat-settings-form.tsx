@@ -100,12 +100,22 @@ const AdvancedContent: FC<AdvancedContentProps> = ({
   onChangeChatSettings,
   showTooltip
 }) => {
-  const { profile, selectedWorkspace } = useContext(ChatbotUIContext)
+  const {
+    profile,
+    selectedWorkspace,
+    availableOpenRouterModels,
+    selectedAssistant
+  } = useContext(ChatbotUIContext)
+
+  function findOpenRouterModel(modelId: string) {
+    return availableOpenRouterModels.find(model => model.modelId === modelId)
+  }
 
   const MODEL_LIMITS = CHAT_SETTING_LIMITS[chatSettings.model] || {
     MIN_TEMPERATURE: 0,
     MAX_TEMPERATURE: 1,
-    MAX_CONTEXT_LENGTH: 4096
+    MAX_CONTEXT_LENGTH:
+      findOpenRouterModel(chatSettings.model)?.maxContext || 4096
   }
 
   return (
@@ -226,7 +236,9 @@ const AdvancedContent: FC<AdvancedContentProps> = ({
           </SelectTrigger>
 
           <SelectContent>
-            <SelectItem value="openai">OpenAI</SelectItem>
+            <SelectItem value="openai">
+              {profile?.use_azure_openai ? "Azure OpenAI" : "OpenAI"}
+            </SelectItem>
 
             {window.location.hostname === "localhost" && (
               <SelectItem value="local">Local</SelectItem>

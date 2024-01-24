@@ -1,4 +1,4 @@
-import Loading from "@/app/loading"
+import Loading from "@/app/[locale]/loading"
 import { ContentType } from "@/types"
 import { User } from "@supabase/supabase-js"
 import { IconDownload, IconLock } from "@tabler/icons-react"
@@ -100,6 +100,13 @@ export const ShareItem: FC<ShareItemProps> = ({
         break
 
       case "assistants":
+        data = {
+          ...data,
+          name: item.name
+        }
+        break
+
+      case "tools":
         data = {
           ...data,
           name: item.name

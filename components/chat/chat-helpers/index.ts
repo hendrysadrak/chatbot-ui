@@ -151,7 +151,7 @@ export const handleLocalChat = async (
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>,
   setFirstTokenReceived: React.Dispatch<React.SetStateAction<boolean>>,
   setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>,
-  setToolInUse: React.Dispatch<React.SetStateAction<"none" | "retrieval">>
+  setToolInUse: React.Dispatch<React.SetStateAction<string>>
 ) => {
   const formattedMessages = await buildFinalMessages(payload, profile, [])
 
@@ -196,7 +196,7 @@ export const handleHostedChat = async (
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>,
   setFirstTokenReceived: React.Dispatch<React.SetStateAction<boolean>>,
   setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>,
-  setToolInUse: React.Dispatch<React.SetStateAction<"none" | "retrieval">>
+  setToolInUse: React.Dispatch<React.SetStateAction<string>>
 ) => {
   const provider =
     modelData.provider === "openai" && profile.use_azure_openai
@@ -219,7 +219,8 @@ export const handleHostedChat = async (
     `/api/chat/${provider}`,
     {
       chatSettings: payload.chatSettings,
-      messages: formattedMessages
+      messages: formattedMessages,
+      tools: []
     },
     true,
     newAbortController,
@@ -279,7 +280,7 @@ export const processResponse = async (
   controller: AbortController,
   setFirstTokenReceived: React.Dispatch<React.SetStateAction<boolean>>,
   setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>,
-  setToolInUse: React.Dispatch<React.SetStateAction<"none" | "retrieval">>
+  setToolInUse: React.Dispatch<React.SetStateAction<string>>
 ) => {
   let fullText = ""
   let contentToAdd = ""
@@ -443,9 +444,10 @@ export const handleCreateMessages = async (
 
     setChatImages(prevImages => [
       ...prevImages,
-      ...newMessageImages.map(obj => ({
+      ...newMessageImages.map((obj, index) => ({
         ...obj,
-        messageId: createdMessages[0].id
+        messageId: createdMessages[0].id,
+        path: paths[index]
       }))
     ])
 

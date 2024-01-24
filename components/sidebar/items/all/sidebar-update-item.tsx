@@ -1,15 +1,30 @@
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import {
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from "@/components/ui/sheet"
 import { AssignWorkspaces } from "@/components/workspace/assign-workspaces"
 import { ChatbotUIContext } from "@/context/context"
+import {
+  createAssistantCollection,
+  deleteAssistantCollection,
+  getAssistantCollectionsByAssistantId
+} from "@/db/assistant-collections"
+import {
+  createAssistantFile,
+  deleteAssistantFile,
+  getAssistantFilesByAssistantId
+} from "@/db/assistant-files"
+import {
+  createAssistantTool,
+  deleteAssistantTool,
+  getAssistantToolsByAssistantId
+} from "@/db/assistant-tools"
 import {
   createAssistantWorkspaces,
   deleteAssistantWorkspace,
@@ -47,6 +62,12 @@ import {
   updatePrompt
 } from "@/db/prompts"
 import { uploadAssistantImage } from "@/db/storage/assistant-images"
+import {
+  createToolWorkspaces,
+  deleteToolWorkspace,
+  getToolWorkspacesByToolId,
+  updateTool
+} from "@/db/tools"
 import { Tables, TablesUpdate } from "@/supabase/types"
 import { CollectionFile, ContentType, DataItemType } from "@/types"
 import { FC, useContext, useEffect, useRef, useState } from "react"
@@ -55,6 +76,7 @@ import { toast } from "sonner"
 import { SidebarDeleteItem } from "./sidebar-delete-item"
 
 interface SidebarUpdateItemProps {
+  isTyping: boolean
   item: DataItemType
   contentType: ContentType
   children: React.ReactNode
@@ -67,7 +89,8 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
   contentType,
   children,
   renderInputs,
-  updateState
+  updateState,
+  isTyping
 }) => {
   const {
     workspaces,
@@ -77,7 +100,8 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
     setPrompts,
     setFiles,
     setCollections,
-    setAssistants
+    setAssistants,
+    setTools
   } = useContext(ChatbotUIContext)
 
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -96,6 +120,24 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
   >([])
   const [selectedCollectionFiles, setSelectedCollectionFiles] = useState<
     CollectionFile[]
+  >([])
+
+  // Assistants Render State
+  const [startingAssistantFiles, setStartingAssistantFiles] = useState<
+    Tables<"files">[]
+  >([])
+  const [startingAssistantCollections, setStartingAssistantCollections] =
+    useState<Tables<"collections">[]>([])
+  const [startingAssistantTools, setStartingAssistantTools] = useState<
+    Tables<"tools">[]
+  >([])
+  const [selectedAssistantFiles, setSelectedAssistantFiles] = useState<
+    Tables<"files">[]
+  >([])
+  const [selectedAssistantCollections, setSelectedAssistantCollections] =
+    useState<Tables<"collections">[]>([])
+  const [selectedAssistantTools, setSelectedAssistantTools] = useState<
+    Tables<"tools">[]
   >([])
 
   useEffect(() => {
@@ -127,7 +169,21 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
       selectedCollectionFiles,
       setSelectedCollectionFiles
     },
-    assistants: null
+    assistants: {
+      startingAssistantFiles,
+      setStartingAssistantFiles,
+      startingAssistantCollections,
+      setStartingAssistantCollections,
+      startingAssistantTools,
+      setStartingAssistantTools,
+      selectedAssistantFiles,
+      setSelectedAssistantFiles,
+      selectedAssistantCollections,
+      setSelectedAssistantCollections,
+      selectedAssistantTools,
+      setSelectedAssistantTools
+    },
+    tools: null
   }
 
   const fetchDataFunctions = {
@@ -141,7 +197,22 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
       setStartingCollectionFiles(collectionFiles.files)
       setSelectedCollectionFiles([])
     },
-    assistants: null
+    assistants: async (assistantId: string) => {
+      const assistantFiles = await getAssistantFilesByAssistantId(assistantId)
+      setStartingAssistantFiles(assistantFiles.files)
+
+      const assistantCollections =
+        await getAssistantCollectionsByAssistantId(assistantId)
+      setStartingAssistantCollections(assistantCollections.collections)
+
+      const assistantTools = await getAssistantToolsByAssistantId(assistantId)
+      setStartingAssistantTools(assistantTools.tools)
+
+      setSelectedAssistantFiles([])
+      setSelectedAssistantCollections([])
+      setSelectedAssistantTools([])
+    },
+    tools: null
   }
 
   const fetchWorkpaceFunctions = {
@@ -164,6 +235,10 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
     },
     assistants: async (assistantId: string) => {
       const item = await getAssistantWorkspacesByAssistantId(assistantId)
+      return item.workspaces
+    },
+    tools: async (toolId: string) => {
+      const item = await getToolWorkspacesByToolId(toolId)
       return item.workspaces
     }
   }
@@ -278,11 +353,7 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
     },
     collections: async (
       collectionId: string,
-      updateState: {
-        image: File
-        collectionFilesToAdd: string[]
-        collectionFilesToRemove: string[]
-      } & TablesUpdate<"assistants">
+      updateState: TablesUpdate<"assistants">
     ) => {
       if (!profile) return
 
@@ -329,10 +400,89 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
     assistants: async (
       assistantId: string,
       updateState: {
+        assistantId: string
         image: File
       } & TablesUpdate<"assistants">
     ) => {
       const { image, ...rest } = updateState
+
+      const filesToAdd = selectedAssistantFiles.filter(
+        selectedFile =>
+          !startingAssistantFiles.some(
+            startingFile => startingFile.id === selectedFile.id
+          )
+      )
+
+      const filesToRemove = startingAssistantFiles.filter(startingFile =>
+        selectedAssistantFiles.some(
+          selectedFile => selectedFile.id === startingFile.id
+        )
+      )
+
+      for (const file of filesToAdd) {
+        await createAssistantFile({
+          user_id: item.user_id,
+          assistant_id: assistantId,
+          file_id: file.id
+        })
+      }
+
+      for (const file of filesToRemove) {
+        await deleteAssistantFile(assistantId, file.id)
+      }
+
+      const collectionsToAdd = selectedAssistantCollections.filter(
+        selectedCollection =>
+          !startingAssistantCollections.some(
+            startingCollection =>
+              startingCollection.id === selectedCollection.id
+          )
+      )
+
+      const collectionsToRemove = startingAssistantCollections.filter(
+        startingCollection =>
+          selectedAssistantCollections.some(
+            selectedCollection =>
+              selectedCollection.id === startingCollection.id
+          )
+      )
+
+      for (const collection of collectionsToAdd) {
+        await createAssistantCollection({
+          user_id: item.user_id,
+          assistant_id: assistantId,
+          collection_id: collection.id
+        })
+      }
+
+      for (const collection of collectionsToRemove) {
+        await deleteAssistantCollection(assistantId, collection.id)
+      }
+
+      const toolsToAdd = selectedAssistantTools.filter(
+        selectedTool =>
+          !startingAssistantTools.some(
+            startingTool => startingTool.id === selectedTool.id
+          )
+      )
+
+      const toolsToRemove = startingAssistantTools.filter(startingTool =>
+        selectedAssistantTools.some(
+          selectedTool => selectedTool.id === startingTool.id
+        )
+      )
+
+      for (const tool of toolsToAdd) {
+        await createAssistantTool({
+          user_id: item.user_id,
+          assistant_id: assistantId,
+          tool_id: tool.id
+        })
+      }
+
+      for (const tool of toolsToRemove) {
+        await deleteAssistantTool(assistantId, tool.id)
+      }
 
       const updatedAssistant = await updateAssistant(assistantId, rest)
 
@@ -350,6 +500,20 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
       )
 
       return updatedAssistant
+    },
+    tools: async (toolId: string, updateState: TablesUpdate<"tools">) => {
+      const updatedTool = await updateTool(toolId, updateState)
+
+      await handleWorkspaceUpdates(
+        startingWorkspaces,
+        selectedWorkspaces,
+        toolId,
+        deleteToolWorkspace,
+        createToolWorkspaces as any,
+        "tool_id"
+      )
+
+      return updatedTool
     }
   }
 
@@ -359,7 +523,8 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
     prompts: setPrompts,
     files: setFiles,
     collections: setCollections,
-    assistants: setAssistants
+    assistants: setAssistants,
+    tools: setTools
   }
 
   const handleUpdate = async () => {
@@ -368,6 +533,7 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
       const setStateFunction = stateUpdateFunctions[contentType]
 
       if (!updateFunction || !setStateFunction) return
+      if (isTyping) return // Prevent update while typing
 
       const updatedItem = await updateFunction(item.id, updateState)
 
@@ -402,44 +568,50 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (!isTyping && e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
       buttonRef.current?.click()
     }
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>{children}</SheetTrigger>
 
-      <DialogContent onKeyDown={handleKeyDown}>
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">
-            Edit {contentType.slice(0, -1)}
-          </DialogTitle>
-        </DialogHeader>
+      <SheetContent
+        className="flex min-w-[450px] flex-col justify-between"
+        side="left"
+        onKeyDown={handleKeyDown}
+      >
+        <div className="grow">
+          <SheetHeader>
+            <SheetTitle className="text-2xl font-bold">
+              Edit {contentType.slice(0, -1)}
+            </SheetTitle>
+          </SheetHeader>
 
-        {/* TODO */}
-        {/* <div className="absolute right-4 top-4">
+          {/* TODO */}
+          {/* <div className="absolute right-4 top-4">
           <ShareMenu item={item} contentType={contentType} />
         </div> */}
 
-        <div className="space-y-3">
-          {workspaces.length > 1 && (
-            <div className="space-y-1">
-              <Label>Assigned Workspaces</Label>
+          <div className="mt-4 space-y-3">
+            {workspaces.length > 1 && (
+              <div className="space-y-1">
+                <Label>Assigned Workspaces</Label>
 
-              <AssignWorkspaces
-                selectedWorkspaces={selectedWorkspaces}
-                onSelectWorkspace={handleSelectWorkspace}
-              />
-            </div>
-          )}
+                <AssignWorkspaces
+                  selectedWorkspaces={selectedWorkspaces}
+                  onSelectWorkspace={handleSelectWorkspace}
+                />
+              </div>
+            )}
 
-          {renderInputs(renderState[contentType])}
+            {renderInputs(renderState[contentType])}
+          </div>
         </div>
 
-        <DialogFooter className="mt-2 flex justify-between">
+        <SheetFooter className="mt-2 flex justify-between">
           <SidebarDeleteItem item={item} contentType={contentType} />
 
           <div className="flex grow justify-end space-x-2">
@@ -451,8 +623,8 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
               Save
             </Button>
           </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   )
 }
