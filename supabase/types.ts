@@ -1220,10 +1220,12 @@ export interface Database {
       tools: {
         Row: {
           created_at: string
+          custom_headers: Json
           description: string
           folder_id: string | null
           id: string
           name: string
+          request_in_body: boolean
           schema: Json
           sharing: string
           updated_at: string | null
@@ -1232,11 +1234,13 @@ export interface Database {
         }
         Insert: {
           created_at?: string
+          custom_headers?: Json
           description: string
           folder_id?: string | null
           id?: string
           name: string
-          schema: Json
+          request_in_body?: boolean
+          schema?: Json
           sharing?: string
           updated_at?: string | null
           url: string
@@ -1244,10 +1248,12 @@ export interface Database {
         }
         Update: {
           created_at?: string
+          custom_headers?: Json
           description?: string
           folder_id?: string | null
           id?: string
           name?: string
+          request_in_body?: boolean
           schema?: Json
           sharing?: string
           updated_at?: string | null
@@ -1267,6 +1273,106 @@ export interface Database {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      workspace_invitations: {
+        Row: {
+          id: string
+          invitee_id: string | null
+          invitee_username: string
+          inviter_id: string
+          inviter_username: string
+          sent_at: string
+          status: string
+          workspace_id: string
+          workspace_name: string
+        }
+        Insert: {
+          id?: string
+          invitee_id?: string | null
+          invitee_username: string
+          inviter_id: string
+          inviter_username: string
+          sent_at?: string
+          status: string
+          workspace_id: string
+          workspace_name: string
+        }
+        Update: {
+          id?: string
+          invitee_id?: string | null
+          invitee_username?: string
+          inviter_id?: string
+          inviter_username?: string
+          sent_at?: string
+          status?: string
+          workspace_id?: string
+          workspace_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_invitations_invitee_id_fkey"
+            columns: ["invitee_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workspace_invitations_inviter_id_fkey"
+            columns: ["inviter_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workspace_invitations_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      workspace_users: {
+        Row: {
+          id: string
+          joined_at: string
+          role: string
+          updated_at: string | null
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          role: string
+          updated_at?: string | null
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          role?: string
+          updated_at?: string | null
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_users_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workspace_users_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           }
         ]
