@@ -70,6 +70,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@apidevtools/json-schema-ref-parser@npm:^11.1.0":
+  version: 11.1.0
+  resolution: "@apidevtools/json-schema-ref-parser@npm:11.1.0"
+  dependencies:
+    "@jsdevtools/ono": "npm:^7.1.3"
+    "@types/json-schema": "npm:^7.0.13"
+    "@types/lodash.clonedeep": "npm:^4.5.7"
+    js-yaml: "npm:^4.1.0"
+    lodash.clonedeep: "npm:^4.5.0"
+  checksum: b05e10853b1c75ac2b2055428d78661d7fe11b2e07db7ddebaa60095c7dc417ec5e78d8a48bbb9011b5d099c280e9faea105848a060bc5c87a6f131be615e2ee
+  languageName: node
+  linkType: hard
+
 "@azure-rest/core-client@npm:^1.1.7":
   version: 1.1.7
   resolution: "@azure-rest/core-client@npm:1.1.7"
@@ -1040,6 +1053,13 @@ __metadata:
     "@jridgewell/resolve-uri": "npm:^3.1.0"
     "@jridgewell/sourcemap-codec": "npm:^1.4.14"
   checksum: 0ea0b2675cf513ec44dc25605616a3c9b808b9832e74b5b63c44260d66b58558bba65764f81928fc1033ead911f8718dca1134049c3e7a93937faf436671df31
+  languageName: node
+  linkType: hard
+
+"@jsdevtools/ono@npm:^7.1.3":
+  version: 7.1.3
+  resolution: "@jsdevtools/ono@npm:7.1.3"
+  checksum: a9f7e3e8e3bc315a34959934a5e2f874c423cf4eae64377d3fc9de0400ed9f36cb5fd5ebce3300d2e8f4085f557c4a8b591427a583729a87841fda46e6c216b9
   languageName: node
   linkType: hard
 
@@ -3390,6 +3410,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/json-schema@npm:^7.0.13":
+  version: 7.0.15
+  resolution: "@types/json-schema@npm:7.0.15"
+  checksum: a996a745e6c5d60292f36731dd41341339d4eeed8180bb09226e5c8d23759067692b1d88e5d91d72ee83dfc00d3aca8e7bd43ea120516c17922cbcb7c3e252db
+  languageName: node
+  linkType: hard
+
 "@types/json5@npm:^0.0.29":
   version: 0.0.29
   resolution: "@types/json5@npm:0.0.29"
@@ -3401,6 +3428,22 @@ __metadata:
   version: 0.16.7
   resolution: "@types/katex@npm:0.16.7"
   checksum: 68dcb9f68a90513ec78ca0196a142e15c2a2c270b1520d752bafd47a99207115085a64087b50140359017d7e9c870b3c68e7e4d36668c9e348a9ef0c48919b5a
+  languageName: node
+  linkType: hard
+
+"@types/lodash.clonedeep@npm:^4.5.7":
+  version: 4.5.9
+  resolution: "@types/lodash.clonedeep@npm:4.5.9"
+  dependencies:
+    "@types/lodash": "npm:*"
+  checksum: 2f224ce9578046bccd1cd9594fb73540600ebd3d59a45695166a6123e2c376b84ab106b005a00453f357907f25bc8bfd2271b822be76e8f5527eadb4690b5e96
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.14.202
+  resolution: "@types/lodash@npm:4.14.202"
+  checksum: 6064d43c8f454170841bd67c8266cc9069d9e570a72ca63f06bceb484cb4a3ee60c9c1f305c1b9e3a87826049fd41124b8ef265c4dd08b00f6766609c7fe9973
   languageName: node
   linkType: hard
 
@@ -4443,6 +4486,7 @@ __metadata:
   resolution: "chatbot-ui@workspace:."
   dependencies:
     "@anthropic-ai/sdk": "npm:^0.12.4"
+    "@apidevtools/json-schema-ref-parser": "npm:^11.1.0"
     "@azure/openai": "npm:^1.0.0-beta.8"
     "@google/generative-ai": "npm:^0.1.3"
     "@hookform/resolvers": "npm:^3.3.4"
@@ -4520,12 +4564,11 @@ __metadata:
     pdf-parse: "npm:^1.1.1"
     postcss: "npm:^8.4.33"
     prettier: "npm:^3.2.4"
-    react: "npm:^18.2.0"
-    react-day-picker: "npm:^8.10.0"
-    react-dom: "npm:^18.2.0"
-    react-hook-form: "npm:^7.49.3"
-    react-i18next: "npm:^14.0.1"
-    react-image-crop: "npm:^11.0.5"
+    react: "npm:^18"
+    react-day-picker: "npm:^8.9.1"
+    react-dom: "npm:^18"
+    react-hook-form: "npm:^7.48.2"
+    react-i18next: "npm:^14.0.0"
     react-markdown: "npm:^9.0.1"
     react-syntax-highlighter: "npm:^15.5.0"
     react-textarea-autosize: "npm:^8.5.3"
@@ -7741,6 +7784,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.clonedeep@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.clonedeep@npm:4.5.0"
+  checksum: 2caf0e4808f319d761d2939ee0642fa6867a4bbf2cfce43276698828380756b99d4c4fa226d881655e6ac298dd453fe12a5ec8ba49861777759494c534936985
+  languageName: node
+  linkType: hard
+
 "lodash.isplainobject@npm:^4.0.6":
   version: 4.0.6
   resolution: "lodash.isplainobject@npm:4.0.6"
@@ -9794,7 +9844,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-day-picker@npm:^8.10.0":
+"react-day-picker@npm:^8.9.1":
   version: 8.10.0
   resolution: "react-day-picker@npm:8.10.0"
   peerDependencies:
@@ -9804,7 +9854,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^18.2.0":
+"react-dom@npm:^18":
   version: 18.2.0
   resolution: "react-dom@npm:18.2.0"
   dependencies:
@@ -9816,7 +9866,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.49.3":
+"react-hook-form@npm:^7.48.2":
   version: 7.49.3
   resolution: "react-hook-form@npm:7.49.3"
   peerDependencies:
@@ -9825,7 +9875,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:^14.0.1":
+"react-i18next@npm:^14.0.0":
   version: 14.0.1
   resolution: "react-i18next@npm:14.0.1"
   dependencies:
@@ -9840,15 +9890,6 @@ __metadata:
     react-native:
       optional: true
   checksum: 9104c51c5d185e6d1b8ad71714b9ef490286f87b8833c7f67949da34f46f65ebcc994f6f3d087ffe180b7f811ba367c64e5e500c8e442fedbdf54c193bad0257
-  languageName: node
-  linkType: hard
-
-"react-image-crop@npm:^11.0.5":
-  version: 11.0.5
-  resolution: "react-image-crop@npm:11.0.5"
-  peerDependencies:
-    react: ">=16.13.1"
-  checksum: 8d86a1aac5ed168864a09ab3a5269914b85125c5b62bade6c587101fef8bff4572ea2bbee252310c8b26803b21dcf5dc50413630c48a2c136aa34b6e8bb86b8d
   languageName: node
   linkType: hard
 
@@ -9993,7 +10034,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.2.0":
+"react@npm:^18":
   version: 18.2.0
   resolution: "react@npm:18.2.0"
   dependencies:
