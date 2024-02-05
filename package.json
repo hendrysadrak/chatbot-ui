@@ -128,7 +128,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
-  "packageManager": "yarn@4.0.2",
+  "packageManager": "yarn@4.1.0",
   "resolutions": {
     "array-buffer-byte-length": "npm:@nolyfill/array-buffer-byte-length@latest",
     "array-includes": "npm:@nolyfill/array-includes@latest",
@@ -190,6 +190,7 @@
     "typed-array-length": "npm:@nolyfill/typed-array-length@latest",
     "unbox-primitive": "npm:@nolyfill/unbox-primitive@latest",
     "which-boxed-primitive": "npm:@nolyfill/which-boxed-primitive@latest",
-    "which-typed-array": "npm:@nolyfill/which-typed-array@latest"
+    "which-typed-array": "npm:@nolyfill/which-typed-array@latest",
+    "abab": "npm:@nolyfill/abab@latest"
   }
 }
