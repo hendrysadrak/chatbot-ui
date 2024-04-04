@@ -5758,7 +5758,7 @@ __metadata:
     next-i18n-router: "npm:^5.2.0"
     next-pwa: "npm:5.6.0"
     next-themes: "npm:^0.2.1"
-    nolyfill: "npm:^1.0.27"
+    nolyfill: "npm:^1.0.30"
     openai: "npm:^4.25.0"
     pdf-parse: "npm:^1.1.1"
     postcss: "npm:^8.4.33"
@@ -10528,12 +10528,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nolyfill@npm:^1.0.27":
-  version: 1.0.28
-  resolution: "nolyfill@npm:1.0.28"
+"nolyfill@npm:^1.0.30":
+  version: 1.0.30
+  resolution: "nolyfill@npm:1.0.30"
   bin:
     nolyfill: bin/nolyfill.js
-  checksum: 10c0/0e09638862c6630fe41520f30d4fb133b3c6017af09749eb2658122b484ed326b7bc03900f93fc26608e2982f2c870e9348525e3618ed43af5514babdcf34bcf
+  checksum: 10c0/d1eb179c3fb49caee6c52af9146cd66121d325e7f9d5e293a26fce89b0bc3f7f98fdfea3bc18116c563ecb7fbea7d91472a39316a00e6afe902d56f0a48f81fb
   languageName: node
   linkType: hard
 
