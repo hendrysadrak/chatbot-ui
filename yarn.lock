@@ -36,9 +36,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@anthropic-ai/sdk@npm:^0.12.4":
-  version: 0.12.4
-  resolution: "@anthropic-ai/sdk@npm:0.12.4"
+"@anthropic-ai/sdk@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "@anthropic-ai/sdk@npm:0.18.0"
   dependencies:
     "@types/node": "npm:^18.11.18"
     "@types/node-fetch": "npm:^2.6.4"
@@ -49,7 +49,7 @@ __metadata:
     formdata-node: "npm:^4.3.2"
     node-fetch: "npm:^2.6.7"
     web-streams-polyfill: "npm:^3.2.1"
-  checksum: 10c0/69c03a0837597e21c74bdabc2beb2d838b53c830ce76dab133fe87aa76bea88f5299288fdf1e836ed7507fff160ec25e08345f9bc52dee78ca3979f6603ea460
+  checksum: 10c0/4724f3d51987848900fc2ef12a363e0cfefe6f770088a5a5ac63d9b5513adbb7fe7aa83d4612421c1305482a61402d5c9fd1cf8074fb4bf8294f3fb20bb95e99
   languageName: node
   linkType: hard
 
@@ -5683,7 +5683,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "chatbot-ui@workspace:."
   dependencies:
-    "@anthropic-ai/sdk": "npm:^0.12.4"
+    "@anthropic-ai/sdk": "npm:^0.18.0"
     "@apidevtools/json-schema-ref-parser": "npm:^11.1.0"
     "@azure/openai": "npm:^1.0.0-beta.8"
     "@google/generative-ai": "npm:^0.1.3"
