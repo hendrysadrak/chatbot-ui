@@ -10,7 +10,7 @@ export type LLMID =
 
 // OpenAI Models (UPDATED 1/29/24)
 export type OpenAILLMID =
-  | "gpt-4-turbo" // GPT-4 Turbo
+  | "gpt-4-turbo-preview" // GPT-4 Turbo
   | "gpt-4-vision-preview" // GPT-4 Vision
   | "gpt-4" // GPT-4
   | "gpt-3.5-turbo" // Updated GPT-3.5 Turbo
@@ -37,6 +37,7 @@ export type MistralLLMID =
 
 export type GroqLLMID =
   | "llama2-70b-4096" // LLaMA2-70b
+  | "llama3-70b-8192" // LLaMA3-70b
   | "mixtral-8x7b-32768" // Mixtral-8x7b
 
 // Perplexity Models (UPDATED 1/31/24)
